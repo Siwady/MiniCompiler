@@ -10,8 +10,8 @@ namespace MiniCompiler
     {
         static void Main(string[] args)
         {
-            Lexer lex=new Lexer(@"12
-+  123");
+            Lexer lex=new Lexer(@"100Holis 100hi=(3+10-5*2)/2;
+print MiNumero+10;");
             Token currentToken = lex.GetToken();
             while (currentToken.Type != TokenType.EOF)
             {

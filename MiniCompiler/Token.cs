@@ -11,7 +11,16 @@ namespace MiniCompiler
     {
         EOF,
         Number,
-        Sum
+        Sum,
+        Id,
+        Mult,
+        Sub,
+        Equal,
+        Eos,
+        Left_parent,
+        Right_parent,
+        Div,
+        print
     }
 
     class Token

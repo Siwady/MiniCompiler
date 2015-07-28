@@ -63,7 +63,9 @@ namespace MiniCompiler
                             lexeme += symbol;
                             symbol = GetNextSymbol();
                             state = 1;
-                        }else if (symbol=='+')
+                        }
+                        else if (symbol == '+' || symbol == '*' || symbol == '-' || symbol == '='
+                            || symbol == ';' || symbol == '(' || symbol == ')' || symbol=='/')
                         {
                             lexeme += symbol;
                             symbol = GetNextSymbol();
@@ -73,10 +75,15 @@ namespace MiniCompiler
                         {
                             symbol = GetNextSymbol();
                             col = _column;
+                        }else if (Char.IsLetter(symbol))
+                        {
+                            lexeme += symbol;
+                            symbol = GetNextSymbol();
+                            state = 4;
                         }
                         else
                         {
-                            throw new LexicalException("current Symbol: "+symbol+" is not accepted");
+                            throw new LexicalException("current Symbol: " + symbol + " is not accepted");
                         }
                         break;
                     case 1:
@@ -115,9 +122,42 @@ namespace MiniCompiler
                             return new Token() { Type = TokenType.Number, Lexeme = lexeme, Column = col, Row = _row };
                         break;
 
-                    case 5:
-                        return new Token() { Type = TokenType.Sum, Lexeme = lexeme, Column = col, Row = _row };
+                    case 4:
+                        if (Char.IsLetter(symbol) || Char.IsDigit(symbol))
+                        {
+                            lexeme += symbol;
+                            symbol = GetNextSymbol();
+                        }
+                        else
+                        {
+                            if(lexeme.ToLower().Equals("print"))
+                            {
+                                return new Token() { Type = TokenType.print, Lexeme = lexeme, Column = col, Row = _row };
+                            }
+                            else
+                                return new Token() { Type = TokenType.Id, Lexeme = lexeme, Column = col, Row = _row };
+                        }
                         break;
+                    case 5:
+                        if (lexeme.Equals("+"))
+                            return new Token() { Type = TokenType.Sum, Lexeme = lexeme, Column = col, Row = _row };
+                        else if (lexeme.Equals("*"))
+                            return new Token() { Type = TokenType.Mult, Lexeme = lexeme, Column = col, Row = _row };
+                        else if (lexeme.Equals("-"))
+                            return new Token() { Type = TokenType.Sub, Lexeme = lexeme, Column = col, Row = _row };
+                        else if (lexeme.Equals("="))
+                            return new Token() { Type = TokenType.Equal, Lexeme = lexeme, Column = col, Row = _row };
+                        else if (lexeme.Equals(";"))
+                            return new Token() { Type = TokenType.Eos, Lexeme = lexeme, Column = col, Row = _row };
+                        else if (lexeme.Equals("("))
+                            return new Token() { Type = TokenType.Left_parent, Lexeme = lexeme, Column = col, Row = _row };
+                        else if (lexeme.Equals(")"))
+                            return new Token() { Type = TokenType.Right_parent, Lexeme = lexeme, Column = col, Row = _row };
+                        else if (lexeme.Equals("/"))
+                            return new Token() { Type = TokenType.Div, Lexeme = lexeme, Column = col, Row = _row };
+                        break;
+
+                    
                 }
             }
             
