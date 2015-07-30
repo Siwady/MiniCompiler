@@ -10,15 +10,16 @@ namespace MiniCompiler
     {
         static void Main(string[] args)
         {
-            Lexer lex=new Lexer(@"100Holis 100hi=(3+10-5*2)/2;
-print MiNumero+10;");
-            Token currentToken = lex.GetToken();
+            Lexer lex=new Lexer(@"A*3/3");
+            /*Token currentToken = lex.GetToken();
             while (currentToken.Type != TokenType.EOF)
             {
                 Console.WriteLine(currentToken);
                 currentToken = lex.GetToken();
             }
-            Console.WriteLine(currentToken);
+            Console.WriteLine(currentToken);*/
+            Parser parser = new Parser(lex);
+            parser.Parse();
             Console.ReadKey();
         }
     }
