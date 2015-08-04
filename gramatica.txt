@@ -1,0 +1,30 @@
+Parse -> StatementList $
+
+
+StatementList ->Statement  StatementList
+	       | E
+
+
+Statement -> id = expr;
+            | print expr;
+
+
+expr -> factor expr´
+
+
+expr´-> + factor expr´
+       |- factor expr´
+       | E
+
+factor ->term factor´
+
+factor´->* term factor´
+        |/ term factor´
+        | E
+
+term -> num
+       |id
+       |(expr)
+
+
+
