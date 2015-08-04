@@ -19,11 +19,82 @@ namespace MiniCompiler
 
         public void Parse()
         {
-            Factor();
+            StatementList();
             if (CurrentToken.Type != TokenType.EOF)
             {
                 throw new ParserException("se esperaba EOF");
             }
+        }
+
+        private void StatementList()
+        {
+            if (CurrentToken.Type == TokenType.Id || CurrentToken.Type == TokenType.print)
+            {
+                Statement();
+                StatementList();
+            }
+            else
+            {
+                //epsilon
+            }
+        }
+
+        private void Statement()
+        {
+            if (CurrentToken.Type==TokenType.Id)
+            {
+                ConsumeToken();
+                if (CurrentToken.Type != TokenType.Equal)
+                    throw new ParserException("se esperaba =");
+ 
+                ConsumeToken();
+                Expr();
+                
+                if (CurrentToken.Type!=TokenType.Eos)
+                    throw new ParserException("se esperaba ;");
+                
+                ConsumeToken();
+
+            }else if (CurrentToken.Type == TokenType.print)
+            {
+                ConsumeToken();
+                Expr();
+                if (CurrentToken.Type != TokenType.Eos)
+                    throw new ParserException("se esperaba EOS");
+
+                ConsumeToken();
+            }
+            else
+            {
+                throw new ParserException("se esperaba una sentencia");
+            }
+        }
+
+        private void Expr()
+        {
+            Factor();
+            ExprP();
+        }
+
+        private void ExprP()
+        {
+            if (CurrentToken.Type == TokenType.Sum)
+            {
+                ConsumeToken();
+                Factor();
+                ExprP();
+            }
+            else if (CurrentToken.Type == TokenType.Sub)
+            {
+                ConsumeToken();
+                Factor();
+                ExprP();
+            }
+            else
+            {
+                //epsilon       
+            }
+
         }
 
         private void Factor()
@@ -74,11 +145,6 @@ namespace MiniCompiler
             {
                 throw  new ParserException("Se esperaba termino");
             }
-        }
-
-        private void Expr()
-        {
-            
         }
 
         private void ConsumeToken()

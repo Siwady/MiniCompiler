@@ -10,7 +10,10 @@ namespace MiniCompiler
     {
         static void Main(string[] args)
         {
-            Lexer lex=new Lexer(@"A*3/3");
+            Lexer lex=new Lexer(@"A=10;
+B=50;
+C=A++B;
+ C;");
             /*Token currentToken = lex.GetToken();
             while (currentToken.Type != TokenType.EOF)
             {
