@@ -134,8 +134,12 @@ namespace MiniCompiler
                             {
                                 return new Token() { Type = TokenType.print, Lexeme = lexeme, Column = col, Row = _row };
                             }
+                            else if (lexeme.ToLower().Equals("read"))
+                            {
+                                return new Token() { Type = TokenType.read, Lexeme = lexeme, Column = col, Row = _row };
+                            }
                             else
-                                return new Token() { Type = TokenType.Id, Lexeme = lexeme, Column = col, Row = _row };
+                                return new Token() {Type = TokenType.Id, Lexeme = lexeme, Column = col, Row = _row};
                         }
                         break;
                     case 5:

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ namespace MiniCompiler
 
         public Lexer Lex { set; get; }
         public Token CurrentToken { set; get; }
+        private Dictionary<string, double> _variables=new Dictionary<string, double>();
 
         public void Parse()
         {
@@ -28,7 +30,7 @@ namespace MiniCompiler
 
         private void StatementList()
         {
-            if (CurrentToken.Type == TokenType.Id || CurrentToken.Type == TokenType.print)
+            if (CurrentToken.Type == TokenType.Id || CurrentToken.Type == TokenType.print || CurrentToken.Type == TokenType.read)
             {
                 Statement();
                 StatementList();
@@ -43,26 +45,44 @@ namespace MiniCompiler
         {
             if (CurrentToken.Type==TokenType.Id)
             {
+                string id_lexema = CurrentToken.Lexeme;
                 ConsumeToken();
                 if (CurrentToken.Type != TokenType.Equal)
                     throw new ParserException("se esperaba =");
- 
+                
                 ConsumeToken();
-                Expr();
+                double evalor=Expr();
                 
                 if (CurrentToken.Type!=TokenType.Eos)
                     throw new ParserException("se esperaba ;");
                 
                 ConsumeToken();
+                _variables[id_lexema] = evalor;
 
             }else if (CurrentToken.Type == TokenType.print)
             {
                 ConsumeToken();
-                Expr();
+                double evalor=Expr();
+                Console.WriteLine(evalor);
                 if (CurrentToken.Type != TokenType.Eos)
                     throw new ParserException("se esperaba EOS");
 
                 ConsumeToken();
+            }
+            else if (CurrentToken.Type == TokenType.read)
+            {
+                ConsumeToken();
+                if (CurrentToken.Type!=TokenType.Id)
+                    throw new ParserException("se esperaba ID");
+                string id_lexema = CurrentToken.Lexeme;
+                
+                ConsumeToken();
+                if (CurrentToken.Type != TokenType.Eos)
+                    throw new ParserException("se esperaba EOS");
+
+                ConsumeToken();
+                ||double valor=Double.Parse(Console.ReadLine());
+                _variables[id_lexema] = valor;
             }
             else
             {
@@ -70,81 +90,92 @@ namespace MiniCompiler
             }
         }
 
-        private void Expr()
+        private double Expr()
         {
-            Factor();
-            ExprP();
+            double valor = 0;
+            double fvalor=Factor();
+            valor=ExprP(fvalor);
+            return valor;
         }
 
-        private void ExprP()
+        private double ExprP(double param)
         {
+            double valor=0;
             if (CurrentToken.Type == TokenType.Sum)
             {
                 ConsumeToken();
-                Factor();
-                ExprP();
+                double fvalor=Factor();
+                valor=ExprP(param+fvalor);
             }
             else if (CurrentToken.Type == TokenType.Sub)
             {
                 ConsumeToken();
-                Factor();
-                ExprP();
+                double fvalor = Factor();
+                valor = ExprP(param - fvalor);
             }
             else
-            {
-                //epsilon       
-            }
-
+                valor = param;
+            return valor;
         }
 
-        private void Factor()
+        private double Factor()
         {
-            Term();
-            FactorP();
+            double valor = 0;
+            double tvalor=Term();
+            valor=FactorP(tvalor);
+            return valor;
         }
 
-        private void FactorP()
+        private double FactorP(double param)
         {
+            double valor = 0;
             if (CurrentToken.Type == TokenType.Mult)
             {
                 ConsumeToken();
-                Term();
-                FactorP();
+                double tvalor=Term();
+                valor=FactorP(param*tvalor);
             }
             else if (CurrentToken.Type == TokenType.Div)
             {
                 ConsumeToken();
-                Term();
-                FactorP();
+                double tvalor = Term();
+                valor = FactorP(param / tvalor);
             }
             else
-            {
-                //Epsilon
-            }
+                valor = param;
+            
+            return valor;
         }
 
-        private void Term()
+        private double Term()
         {
+            double valor = 0;
             if(CurrentToken.Type==TokenType.Number)
             {
+                valor=Double.Parse(CurrentToken.Lexeme);
                 ConsumeToken();
             }
             else if (CurrentToken.Type == TokenType.Id)
             {
+                if (_variables.ContainsKey(CurrentToken.Lexeme))
+                    valor = _variables[CurrentToken.Lexeme];
+                
                 ConsumeToken();
             }
             else if (CurrentToken.Type == TokenType.Left_parent)
             {
                 ConsumeToken();
-                Expr();
+                double evalor=Expr();
                 if (CurrentToken.Type != TokenType.Right_parent)
                     throw new ParserException("Se esperaba ) ");
                 ConsumeToken();
+                valor = evalor;
             }
             else
             {
                 throw  new ParserException("Se esperaba termino");
             }
+            return valor;
         }
 
         private void ConsumeToken()

@@ -10,10 +10,9 @@ namespace MiniCompiler
     {
         static void Main(string[] args)
         {
-            Lexer lex=new Lexer(@"A=10;
-B=50;
-C=A++B;
- C;");
+            Lexer lex=new Lexer(@"read A;
+read B;
+print A+B;");
             /*Token currentToken = lex.GetToken();
             while (currentToken.Type != TokenType.EOF)
             {

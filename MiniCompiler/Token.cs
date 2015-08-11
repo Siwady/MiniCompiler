@@ -20,7 +20,8 @@ namespace MiniCompiler
         Left_parent,
         Right_parent,
         Div,
-        print
+        print,
+        read
     }
 
     class Token
