@@ -21,7 +21,7 @@ print A+B;");
             }
             Console.WriteLine(currentToken);*/
             Parser parser = new Parser(lex);
-            parser.Parse();
+            var par=parser.Parse();
             Console.ReadKey();
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Management.Instrumentation;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,29 +20,32 @@ namespace MiniCompiler
         public Token CurrentToken { set; get; }
         private Dictionary<string, double> _variables=new Dictionary<string, double>();
 
-        public void Parse()
+        public List<StatementNode> Parse()
         {
-            StatementList();
+            var statement_list=StatementList();
             if (CurrentToken.Type != TokenType.EOF)
             {
                 throw new ParserException("se esperaba EOF");
             }
+            return statement_list;
         }
 
-        private void StatementList()
+        private List<StatementNode> StatementList()
         {
             if (CurrentToken.Type == TokenType.Id || CurrentToken.Type == TokenType.print || CurrentToken.Type == TokenType.read)
             {
-                Statement();
-                StatementList();
+                var statement=Statement();
+                var statement_list=StatementList();
+                statement_list.Insert(0,statement);
+                return statement_list;
             }
             else
             {
-                //epsilon
+                return new List<StatementNode>();
             }
         }
 
-        private void Statement()
+        private StatementNode Statement()
         {
             if (CurrentToken.Type==TokenType.Id)
             {
@@ -51,23 +55,23 @@ namespace MiniCompiler
                     throw new ParserException("se esperaba =");
                 
                 ConsumeToken();
-                double evalor=Expr();
+                var evalor=Expr();
                 
                 if (CurrentToken.Type!=TokenType.Eos)
                     throw new ParserException("se esperaba ;");
                 
                 ConsumeToken();
-                _variables[id_lexema] = evalor;
+                return new AssignmentNode(new IdNode(id_lexema),evalor);
 
             }else if (CurrentToken.Type == TokenType.print)
             {
                 ConsumeToken();
-                double evalor=Expr();
-                Console.WriteLine(evalor);
+                var evalor=Expr();
                 if (CurrentToken.Type != TokenType.Eos)
                     throw new ParserException("se esperaba EOS");
 
                 ConsumeToken();
+                return new PrintNode(evalor);
             }
             else if (CurrentToken.Type == TokenType.read)
             {
@@ -81,8 +85,7 @@ namespace MiniCompiler
                     throw new ParserException("se esperaba EOS");
 
                 ConsumeToken();
-                ||double valor=Double.Parse(Console.ReadLine());
-                _variables[id_lexema] = valor;
+                return new ReadNode(new IdNode(id_lexema));
             }
             else
             {
@@ -90,92 +93,85 @@ namespace MiniCompiler
             }
         }
 
-        private double Expr()
+        private ExpressionNode Expr()
         {
-            double valor = 0;
-            double fvalor=Factor();
-            valor=ExprP(fvalor);
-            return valor;
+            var fvalor=Factor();
+            return ExprP(fvalor);
+            
         }
 
-        private double ExprP(double param)
+        private ExpressionNode ExprP(ExpressionNode param)
         {
-            double valor=0;
             if (CurrentToken.Type == TokenType.Sum)
             {
                 ConsumeToken();
-                double fvalor=Factor();
-                valor=ExprP(param+fvalor);
+                var fvalor=Factor();
+                return ExprP(new SumNode(param,fvalor));
             }
             else if (CurrentToken.Type == TokenType.Sub)
             {
                 ConsumeToken();
-                double fvalor = Factor();
-                valor = ExprP(param - fvalor);
+                var fvalor = Factor();
+                return ExprP(new SubstractNode(param , fvalor));
             }
             else
-                valor = param;
-            return valor;
+                return  param;
+            
         }
 
-        private double Factor()
+        private ExpressionNode Factor()
         {
-            double valor = 0;
-            double tvalor=Term();
-            valor=FactorP(tvalor);
-            return valor;
+            var tvalor=Term();
+            return FactorP(tvalor);
+            
         }
 
-        private double FactorP(double param)
+        private ExpressionNode FactorP(ExpressionNode param)
         {
-            double valor = 0;
             if (CurrentToken.Type == TokenType.Mult)
             {
                 ConsumeToken();
-                double tvalor=Term();
-                valor=FactorP(param*tvalor);
+                var tvalor=Term();
+                return FactorP(new MultiplicationNode(param,tvalor));
             }
             else if (CurrentToken.Type == TokenType.Div)
             {
                 ConsumeToken();
-                double tvalor = Term();
-                valor = FactorP(param / tvalor);
+                var tvalor = Term();
+                return FactorP(new DivisionNode(param ,tvalor));
             }
             else
-                valor = param;
+                return param;
             
-            return valor;
         }
 
-        private double Term()
+        private ExpressionNode Term()
         {
-            double valor = 0;
             if(CurrentToken.Type==TokenType.Number)
             {
-                valor=Double.Parse(CurrentToken.Lexeme);
+                double valor=Double.Parse(CurrentToken.Lexeme);
                 ConsumeToken();
+                return new NumberNode(valor);
             }
             else if (CurrentToken.Type == TokenType.Id)
             {
-                if (_variables.ContainsKey(CurrentToken.Lexeme))
-                    valor = _variables[CurrentToken.Lexeme];
-                
+                string lexem = CurrentToken.Lexeme;
                 ConsumeToken();
+                return new IdNode(lexem);
             }
             else if (CurrentToken.Type == TokenType.Left_parent)
             {
                 ConsumeToken();
-                double evalor=Expr();
+                var evalor=Expr();
                 if (CurrentToken.Type != TokenType.Right_parent)
                     throw new ParserException("Se esperaba ) ");
                 ConsumeToken();
-                valor = evalor;
+                return evalor;
             }
             else
             {
                 throw  new ParserException("Se esperaba termino");
             }
-            return valor;
         }
 
         private void ConsumeToken()
@@ -183,5 +179,44 @@ namespace MiniCompiler
             CurrentToken = Lex.GetToken();
         }
 
+    }
+
+    internal class ReadNode : StatementNode
+    {
+        public ReadNode(IdNode idNode)
+        {
+
+            ID_Node = idNode;
+        }
+
+        public IdNode ID_Node { get; set; }
+    }
+
+    internal class PrintNode : StatementNode
+    {
+        public PrintNode(ExpressionNode value)
+        {
+
+            Value = value;
+        }
+
+        public ExpressionNode Value { get; set; }
+    }
+
+    internal class AssignmentNode : StatementNode
+    {
+        public AssignmentNode(IdNode idNode, ExpressionNode value)
+        {
+             ID_Node = idNode;
+            Value = value;
+        }
+
+        public IdNode ID_Node { get; set; }
+
+        public ExpressionNode Value { get; set; }
+    }
+
+    internal class StatementNode
+    {
     }
 }
