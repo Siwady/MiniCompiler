@@ -1,6 +1,8 @@
+using System;
+
 namespace MiniCompiler
 {
-    internal class BinaryOperationNode : ExpressionNode
+    internal abstract class BinaryOperationNode : ExpressionNode
     {
         public BinaryOperationNode(ExpressionNode leftNode, ExpressionNode rightNode)
         {
@@ -11,5 +13,10 @@ namespace MiniCompiler
         public ExpressionNode RightNode { get; set; }
 
         public ExpressionNode LeftNode { get; set; }
+
+        public override string ToXML()
+        {
+            return String.Format("<{0}>"+LeftNode.ToXML()+RightNode.ToXML()+"</{0}>",GetType().Name);
+        }
     }
 }

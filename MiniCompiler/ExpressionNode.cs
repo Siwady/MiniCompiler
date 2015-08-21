@@ -1,6 +1,8 @@
 namespace MiniCompiler
 {
-    internal class ExpressionNode
+    internal abstract class ExpressionNode
     {
+        public abstract double Evaluate();
+        public abstract string ToXML();
     }
 }

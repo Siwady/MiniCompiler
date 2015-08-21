@@ -10,5 +10,14 @@ namespace MiniCompiler
         }
 
         public double Valor { get; set; }
+        public override double Evaluate()
+        {
+            return Valor;
+        }
+
+        public override string ToXML()
+        {
+            return String.Format("<Number>{0}</Number>", Valor);
+        }
     }
 }

@@ -12,7 +12,8 @@ namespace MiniCompiler
         {
             Lexer lex=new Lexer(@"read A;
 read B;
-print A+B;");
+C=10;
+print (A+B/3)*C/20;");
             /*Token currentToken = lex.GetToken();
             while (currentToken.Type != TokenType.EOF)
             {
@@ -21,7 +22,14 @@ print A+B;");
             }
             Console.WriteLine(currentToken);*/
             Parser parser = new Parser(lex);
+            string XML = "";
             var par=parser.Parse();
+            foreach (var statementNode in par)
+            {
+                statementNode.Interpretar();
+                XML += statementNode.ToXML()+"\n";
+            }
+            Console.WriteLine(XML);
             Console.ReadKey();
         }
     }

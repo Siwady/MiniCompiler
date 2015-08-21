@@ -180,43 +180,4 @@ namespace MiniCompiler
         }
 
     }
-
-    internal class ReadNode : StatementNode
-    {
-        public ReadNode(IdNode idNode)
-        {
-
-            ID_Node = idNode;
-        }
-
-        public IdNode ID_Node { get; set; }
-    }
-
-    internal class PrintNode : StatementNode
-    {
-        public PrintNode(ExpressionNode value)
-        {
-
-            Value = value;
-        }
-
-        public ExpressionNode Value { get; set; }
-    }
-
-    internal class AssignmentNode : StatementNode
-    {
-        public AssignmentNode(IdNode idNode, ExpressionNode value)
-        {
-             ID_Node = idNode;
-            Value = value;
-        }
-
-        public IdNode ID_Node { get; set; }
-
-        public ExpressionNode Value { get; set; }
-    }
-
-    internal class StatementNode
-    {
-    }
 }
