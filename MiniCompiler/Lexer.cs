@@ -202,6 +202,14 @@ namespace MiniCompiler
                             {
                                 return new Token() { Type = TokenType.Array, Lexeme = lexeme, Column = col, Row = _row };
                             }
+                            else if (lexeme.ToLower().Equals("true"))
+                            {
+                                return new Token() { Type = TokenType.True, Lexeme = lexeme, Column = col, Row = _row };
+                            }
+                            else if (lexeme.ToLower().Equals("false"))
+                            {
+                                return new Token() { Type = TokenType.False, Lexeme = lexeme, Column = col, Row = _row };
+                            }
                             else
                                 return new Token() {Type = TokenType.Id, Lexeme = lexeme, Column = col, Row = _row};
                         }

@@ -40,7 +40,10 @@ namespace MiniCompiler
         Comma,
         Array,
         LeftBracket,
-        RightBracket
+        RightBracket,
+        True,
+        False,
+        Of
     }
 
     class Token

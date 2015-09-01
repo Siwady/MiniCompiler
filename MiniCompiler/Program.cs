@@ -13,23 +13,32 @@ namespace MiniCompiler
             Lexer lex=new Lexer(@"int a,b,c;
 float d;
 bool e;
-for  while end to  if then else  array[10]  do");
-            Token currentToken = lex.GetToken();
+if true then 
+end
+
+while true do
+    read a;
+end
+
+for a=3 to 5
+end");
+            /*Token currentToken = lex.GetToken();
             while (currentToken.Type != TokenType.EOF)
             {
                 Console.WriteLine(currentToken);
                 currentToken = lex.GetToken();
             }
-            Console.WriteLine(currentToken);
-            /*Parser parser = new Parser(lex);
+            Console.WriteLine(currentToken);*/
+            Parser parser = new Parser(lex);
             string XML = "";
-            var par=parser.Parse();
-            foreach (var statementNode in par)
+            parser.Parse();
+            Console.WriteLine("Works!");
+            /*foreach (var statementNode in par)
             {
                 statementNode.Interpretar();
                 XML += statementNode.ToXML()+"\n";
-            }
-            Console.WriteLine(XML);*/
+            }*/
+            Console.WriteLine(XML);
             Console.ReadKey();
         }
     }
