@@ -21,7 +21,26 @@ namespace MiniCompiler
         Right_parent,
         Div,
         print,
-        read
+        read,
+        String,
+        Int,
+        Bool,
+        Float,
+        String_Literal,
+        Int_Literal,
+        Float_Literal,
+        If,
+        Then,
+        While,
+        End,
+        Else,
+        Do,
+        For,
+        To,
+        Comma,
+        Array,
+        LeftBracket,
+        RightBracket
     }
 
     class Token
