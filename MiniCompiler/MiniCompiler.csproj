@@ -45,10 +45,16 @@
     <Compile Include="BinaryOperationNode.cs" />
     <Compile Include="DivisionNode.cs" />
     <Compile Include="ExpressionNode.cs" />
+    <Compile Include="ForStatementNode.cs" />
     <Compile Include="IdNode.cs" />
+    <Compile Include="IfNodeStatement.cs" />
     <Compile Include="Lexer.cs" />
+    <Compile Include="LiteralFalseNode.cs" />
+    <Compile Include="LiteralFloatNode.cs" />
+    <Compile Include="LiteralIntNode.cs" />
+    <Compile Include="LiteralStringNode.cs" />
+    <Compile Include="LiteralTrueNode.cs" />
     <Compile Include="MultiplicationNode.cs" />
-    <Compile Include="NumberNode.cs" />
     <Compile Include="parser.cs" />
     <Compile Include="ParserException.cs" />
     <Compile Include="PrintNode.cs" />
@@ -59,6 +65,7 @@
     <Compile Include="SubstractNode.cs" />
     <Compile Include="SumNode.cs" />
     <Compile Include="Token.cs" />
+    <Compile Include="WhileNodoStatement.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

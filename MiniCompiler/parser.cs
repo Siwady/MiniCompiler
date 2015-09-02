@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.Dynamic;
 using System.Linq;
@@ -22,16 +21,16 @@ namespace MiniCompiler
         public Token CurrentToken { set; get; }
         private Dictionary<string, double> _variables=new Dictionary<string, double>();
 
-        public void Parse()
+        public List<StatementNode> Parse()
         {
             DeclarationList();
-            StatementList();
-            //var statement_list=StatementList();
+            
+            var statementList=StatementList();
             if (CurrentToken.Type != TokenType.EOF)
             {
                 throw new ParserException("se esperaba EOF");
             }
-            //return statement_list;
+            return statementList;
         }
 
         private List<StatementNode> StatementList()
@@ -54,48 +53,22 @@ namespace MiniCompiler
         {
             if (CurrentToken.Type==TokenType.Id)
             {
-               /* string id_lexema = CurrentToken.Lexeme;
-                ConsumeToken();
-                if (CurrentToken.Type != TokenType.Equal)
-                    throw new ParserException("se esperaba =");
-                
-                ConsumeToken();
-                Expr();
-                //var evalor=Expr();
-                
-                if (CurrentToken.Type!=TokenType.Eos)
-                    throw new ParserException("se esperaba ;");
-                
-                ConsumeToken();
-                //return new AssignmentNode(new IdNode(id_lexema),evalor);*/
                 return Assigment();
 
             }else if (CurrentToken.Type == TokenType.print)
             {
-               /* ConsumeToken();
-                Expr();
-                //var evalor=Expr();
-                if (CurrentToken.Type != TokenType.Eos)
-                    throw new ParserException("se esperaba EOS");
-
-                ConsumeToken();
-              //  return new PrintNode(evalor);*/
+            
               return PrintStatement();
             }
             else if (CurrentToken.Type == TokenType.read)
             {
                 ConsumeToken();
-               /* if (CurrentToken.Type!=TokenType.Id)
-                    throw new ParserException("se esperaba ID");
-                string id_lexema = CurrentToken.Lexeme;
-                
-                ConsumeToken*/
-                Variable();
+                var var= Variable();
                 if (CurrentToken.Type != TokenType.Eos)
                     throw new ParserException("se esperaba EOS");
 
                 ConsumeToken();
-               // return new ReadNode(new IdNode(id_lexema));
+                return new ReadNode(var);
             }else if (CurrentToken.Type == TokenType.If)
             {
                return IfStatement();
@@ -114,45 +87,41 @@ namespace MiniCompiler
 
         private ExpressionNode Expr()
         {
-            Factor();
-            ExprP();
-            //var fvalor=Factor();
-            //return ExprP(fvalor);
+          
+            var fvalor=Factor();
+            return ExprP(fvalor);
 
         }
 
-        private void ExprP()//ExpressionNode param)
+        private ExpressionNode ExprP(ExpressionNode param)
         {
             if (CurrentToken.Type == TokenType.Sum)
             {
                 ConsumeToken();
-                Factor();
-                ExprP();
-                // var fvalor=Factor();
-                //  return ExprP(new SumNode(param,fvalor));
+               
+                 var fvalor=Factor();
+                  return ExprP(new SumNode(param,fvalor));
             }
             else if (CurrentToken.Type == TokenType.Sub)
             {
                 ConsumeToken();
-                Factor();
-                ExprP();
-                // var fvalor = Factor();
-                // return ExprP(new SubstractNode(param , fvalor));
+             
+                 var fvalor = Factor();
+                 return ExprP(new SubstractNode(param , fvalor));
             }
             else
             {
-                //Epislon
+                return  param;
             }
-                //return  param;
-            
+
+
         }
 
-        private void Factor()
+        private ExpressionNode Factor()
         {
-          //  var tvalor=Term();
-            Term();
-            FactorP();
-            //return FactorP(tvalor);
+            var tvalor=Term();
+           
+            return FactorP(tvalor);
 
         }
 
@@ -183,27 +152,6 @@ namespace MiniCompiler
 
         private ExpressionNode Term()
         {
-           /* if(CurrentToken.Type==TokenType.Number)
-            {
-                double valor=Double.Parse(CurrentToken.Lexeme);
-                ConsumeToken();
-                return new NumberNode(valor);
-            }
-            else if (CurrentToken.Type == TokenType.Id)
-            {
-                string lexem = CurrentToken.Lexeme;
-                ConsumeToken();
-                return new IdNode(lexem);
-            }
-            else if (CurrentToken.Type == TokenType.Left_parent)
-            {
-                ConsumeToken();
-                var evalor=Expr();
-                if (CurrentToken.Type != TokenType.Right_parent)
-                    throw new ParserException("Se esperaba ) ");
-                ConsumeToken();
-                return evalor;
-            }*/
             if (CurrentToken.Type == TokenType.Id )
             {
                 return Variable();
@@ -343,11 +291,29 @@ namespace MiniCompiler
                CurrentToken.Type == TokenType.True  ||
                CurrentToken.Type == TokenType.False || CurrentToken.Type == TokenType.String_Literal)
             {
-                if (CurrentToken.Type == TokenType.Float_Literal)
-                {
-                    return new LiteralFloatNode(float.TryParse(CurrentToken.Lexeme));
-                }
+                var token = CurrentToken;
                 ConsumeToken();
+                if (token.Type == TokenType.Float_Literal)
+                {
+                    return new LiteralFloatNode(float.Parse(token.Lexeme));
+                }
+                if (token.Type == TokenType.Int_Literal)
+                {
+                    return new LiteralIntNode(int.Parse(token.Lexeme));
+                }
+                if (token.Type == TokenType.True)
+                {
+                    return new LiteralTrueNode();
+                }
+                if (token.Type == TokenType.False)
+                {
+                    return new LiteralFalseNode();
+                }
+                else 
+                {
+                    return new LiteralStringNode(token.Lexeme);
+                }
+               
                 
             }
             else
@@ -358,26 +324,29 @@ namespace MiniCompiler
 
         private ExpressionNode Variable()
         {
+
             if (CurrentToken.Type != TokenType.Id)
                 throw new ParserException("Se esperaba Id ");
+            string idValue = CurrentToken.Lexeme;
             ConsumeToken();
-            VariableP();
+            var arrayNode = VariableP(new IdNode(idValue));
+           return  arrayNode ?? new IdNode(idValue) ;
         }
 
-        private void VariableP()
+        private ExpressionNode VariableP(ExpressionNode param)
         {
             if (CurrentToken.Type == TokenType.LeftBracket)
             {
                 ConsumeToken();
-                ExprList();
+                var expL =ExprList();
                 if (CurrentToken.Type != TokenType.RightBracket)
                     throw new ParserException("Se esperaba ] ");
                 ConsumeToken();
-                VariableP();
+                return VariableP(new VaribleArrayNode(param,expL));
             }
             else
             {
-                //Epsilon
+                return param;
             }
            
 
@@ -385,15 +354,15 @@ namespace MiniCompiler
 
         private StatementNode Assigment()
         {
-            Variable();
+           var variable=  Variable();
             if (CurrentToken.Type != TokenType.Equal)
                 throw new ParserException("Se esperaba = ");
             ConsumeToken();
-            Expr();
+            var expr = Expr();
             if (CurrentToken.Type != TokenType.Eos)
                 throw new ParserException("Se esperaba Eos ");
             ConsumeToken();
-
+            return new AssignmentNode(variable,expr);
         }
 
         private StatementNode PrintStatement()
@@ -401,12 +370,12 @@ namespace MiniCompiler
             if (CurrentToken.Type == TokenType.print)
             {
                 ConsumeToken();
-                Expr();
+               var expr= Expr();
                 if (CurrentToken.Type != TokenType.Eos)
                     throw new ParserException("se esperaba EOS");
 
                 ConsumeToken();
-
+                return new PrintNode(expr);
             }
             else
             {
@@ -419,12 +388,13 @@ namespace MiniCompiler
             if (CurrentToken.Type == TokenType.If)
             {
                 ConsumeToken();
-                Expr();
+               var expr = Expr();
                 if (CurrentToken.Type != TokenType.Then)
                     throw new ParserException("se esperaba then");
                 ConsumeToken();
                var statementList= StatementList();
-                IfStatementP();
+               var elseStatement= IfStatementP();
+                return new IfNodeStatement(expr, statementList, elseStatement);
             }
             else
             {
@@ -432,18 +402,20 @@ namespace MiniCompiler
             }
         }
 
-        private void IfStatementP()
+        private List<StatementNode> IfStatementP()
         {
             if (CurrentToken.Type == TokenType.End)
             {
                 ConsumeToken();
+                return null;
             }else if (CurrentToken.Type == TokenType.Else)
             {
                 ConsumeToken();
-                StatementList();
+               var statementList= StatementList();
                 if (CurrentToken.Type != TokenType.End)
                     throw new ParserException("se esperaba End");
                 ConsumeToken();
+                return StatementList();
             }
             else
             {
@@ -456,14 +428,15 @@ namespace MiniCompiler
             if (CurrentToken.Type == TokenType.While)
             {
                 ConsumeToken();
-                Expr();
+                var expr =Expr();
                 if (CurrentToken.Type != TokenType.Do)
                     throw new ParserException("se esperaba Do");
                 ConsumeToken();
-                StatementList();
+                var list =StatementList();
                 if (CurrentToken.Type != TokenType.End)
                     throw new ParserException("se esperaba End");
                 ConsumeToken();
+                return new WhileNodoStatement(expr, list);
             }
             else
             {
@@ -476,42 +449,46 @@ namespace MiniCompiler
             if (CurrentToken.Type == TokenType.For)
             {
                 ConsumeToken();
-                Variable();
+                var variable =Variable();
                 if (CurrentToken.Type != TokenType.Equal)
                     throw new ParserException("se esperaba =");
                 ConsumeToken();
-                Expr();
+               var expr= Expr();
                 if (CurrentToken.Type != TokenType.To)
                     throw new ParserException("se esperaba To");
                 ConsumeToken();
-                Expr();
-                StatementList();
+               var expr2= Expr();
+               var list= StatementList();
                 if (CurrentToken.Type != TokenType.End)
                     throw new ParserException("se esperaba end");
                 ConsumeToken();
+                return new ForStatementNode(variable, expr, expr2, list);
             }
             else
             {
                 throw new ParserException("se esperaba For");
             }
         }
-        private void ExprList()
+        private List<ExpressionNode> ExprList()
         {
-            Expr();
-            ExprListP();
+            var exp =Expr();
+            List<ExpressionNode> exprL =  ExprListP();
+            exprL.Insert(0,exp);
+            return exprL;
         }
 
-        private void ExprListP()
+        private List<ExpressionNode> ExprListP()
         {
             if (CurrentToken.Type == TokenType.Comma)
             {
                 ConsumeToken();
-                Expr();
-                ExprListP();
+                var exp =Expr();
+                List<ExpressionNode> exprL= ExprListP();
+                return exprL;
             }
             else
             {
-                //
+                return new List<ExpressionNode>();
             }
         }
 
@@ -523,22 +500,21 @@ namespace MiniCompiler
         
     }
 
-    public class LiteralFloatNode : ExpressionNode
+    public class VaribleArrayNode : ExpressionNode
     {
-        private float _value;
-        public LiteralFloatNode(float value)
+        public VaribleArrayNode(ExpressionNode expressionNode, List<ExpressionNode> expL)
         {
-            this._value = value;
+            ExpressionN = expressionNode;
+            ExprL = expL;
         }
 
-        public override double Evaluate()
-        {
-            return _value;
-        }
+        public List<ExpressionNode> ExprL { get; set; }
+
+        public ExpressionNode ExpressionN { get; set; }
 
         public override string ToXML()
         {
-            return _value.ToString();
+            throw new System.NotImplementedException();
         }
     }
 }

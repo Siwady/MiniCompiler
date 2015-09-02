@@ -4,22 +4,18 @@ namespace MiniCompiler
 {
     internal class ReadNode : StatementNode
     {
-        public ReadNode(IdNode idNode)
+        public ReadNode(ExpressionNode variable)
         {
 
-            ID_Node = idNode;
+            Variable = variable;
         }
 
-        public IdNode ID_Node { get; set; }
-        public override void Interpretar()
-        {
-            double value=Convert.ToDouble(Console.ReadLine());
-            Variables.Instance.SetValue(ID_Node.Name,value);
-        }
+        public ExpressionNode Variable { get; set; }
+        
 
         public override string ToXML()
         {
-            return String.Format("<Read>{0}</Read>",ID_Node.ToXML());
+            return String.Format("<Read>{0}</Read>",Variable.ToXML());
         }
     }
 }

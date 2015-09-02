@@ -11,11 +11,7 @@ namespace MiniCompiler
         }
 
         public string Name { get; set; }
-        public override double Evaluate()
-        {
-            return Variables.Instance.GetValue(Name);
-        }
-
+       
         public override string ToXML()
         {
             return String.Format("<Id>{0}</Id>",Name);

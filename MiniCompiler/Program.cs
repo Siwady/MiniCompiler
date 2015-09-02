@@ -31,7 +31,7 @@ end");
             Console.WriteLine(currentToken);*/
             Parser parser = new Parser(lex);
             string XML = "";
-            parser.Parse();
+            var par =parser.Parse();
             Console.WriteLine("Works!");
             /*foreach (var statementNode in par)
             {
