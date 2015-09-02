@@ -7,11 +7,7 @@ namespace MiniCompiler
 
         }
 
-        public override double Evaluate()
-        {
-            return LeftNode.Evaluate() / RightNode.Evaluate();
-        }
-
+       
        
     }
 }

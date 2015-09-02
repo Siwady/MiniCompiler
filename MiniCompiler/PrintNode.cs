@@ -13,7 +13,7 @@ namespace MiniCompiler
         public ExpressionNode Value { get; set; }
         public override void Interpretar()
         {
-            Console.WriteLine(Value.Evaluate());
+            //Console.WriteLine(Value.Evaluate());
         }
 
         public override string ToXML()

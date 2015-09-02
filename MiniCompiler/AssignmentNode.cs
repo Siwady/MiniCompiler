@@ -15,7 +15,7 @@ namespace MiniCompiler
         public ExpressionNode Value { get; set; }
         public override void Interpretar()
         {
-            Variables.Instance.SetValue(ID_Node.Name, Value.Evaluate());
+            //Variables.Instance.SetValue(ID_Node.Name, Value.Evaluate());
         }
 
         public override string ToXML()

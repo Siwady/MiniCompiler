@@ -55,10 +55,12 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadNode.cs" />
+    <Compile Include="SimpleVariable.cs" />
     <Compile Include="StatementNode.cs" />
     <Compile Include="SubstractNode.cs" />
     <Compile Include="SumNode.cs" />
     <Compile Include="Token.cs" />
+    <Compile Include="WhileNode.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
