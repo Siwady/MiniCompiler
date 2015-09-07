@@ -61,6 +61,14 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadNode.cs" />
+    <Compile Include="Semantic\SemanticException.cs" />
+    <Compile Include="Semantic\Types\ArrayType.cs" />
+    <Compile Include="Semantic\Types\BooleanType.cs" />
+    <Compile Include="Semantic\Types\FloatType.cs" />
+    <Compile Include="Semantic\Types\IntType.cs" />
+    <Compile Include="Semantic\Types\StringType.cs" />
+    <Compile Include="Semantic\Types\Type.cs" />
+    <Compile Include="Semantic\SymbolTable.cs" />
     <Compile Include="StatementNode.cs" />
     <Compile Include="SubstractNode.cs" />
     <Compile Include="SumNode.cs" />

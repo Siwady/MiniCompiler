@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MiniCompiler.Semantic;
 
 namespace MiniCompiler
 {
@@ -12,6 +13,9 @@ namespace MiniCompiler
         {
             Lexer lex=new Lexer(@"int a,b,c;
 float d;
+string a2;
+array[10,10] of int arreglo;
+array[10] of array[10] of int arreglo2;
 bool e;
 if true then 
 end
@@ -32,6 +36,7 @@ end");
             Parser parser = new Parser(lex);
             string XML = "";
             var par =parser.Parse();
+            var table = SymbolTable.Instance;
             Console.WriteLine("Works!");
             /*foreach (var statementNode in par)
             {

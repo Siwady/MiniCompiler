@@ -5,6 +5,8 @@ using System.Linq;
 using System.Management.Instrumentation;
 using System.Text;
 using System.Threading.Tasks;
+using MiniCompiler.Semantic;
+using MiniCompiler.Semantic.Types;
 
 namespace MiniCompiler
 {
@@ -20,6 +22,14 @@ namespace MiniCompiler
         public Lexer Lex { set; get; }
         public Token CurrentToken { set; get; }
         private Dictionary<string, double> _variables=new Dictionary<string, double>();
+        private Dictionary<TokenType, Type> _primitivetypes = new Dictionary<TokenType, Type>()
+        {
+            {TokenType.Float, new FloatType()}, 
+            {TokenType.Int, new IntType()},
+            {TokenType.String, new StringType()},
+            {TokenType.Bool, new BooleanType()}
+        };
+
 
         public List<StatementNode> Parse()
         {
@@ -191,52 +201,63 @@ namespace MiniCompiler
         }
         private void Declaration()
         {
-            VariableType();
+            Type type=VariableType();
             if (CurrentToken.Type != TokenType.Id)
                 throw new ParserException("Se esperaba Id ");
+            string id = CurrentToken.Lexeme;
             ConsumeToken();
-            IdentifierList();
+            List<string> identifier=IdentifierList();
+            identifier.Insert(0,id);
             if (CurrentToken.Type != TokenType.Eos)
                 throw new ParserException("Se esperaba Eos ");
             ConsumeToken();
+            foreach (var ide in identifier)
+            {
+                SymbolTable.Instance.DeclareVariable(ide,type);
+            }
         }
 
-        private void IdentifierList()
+        private List<string> IdentifierList()
         {
             if (CurrentToken.Type == TokenType.Comma)
             {
                 ConsumeToken();
                 if (CurrentToken.Type != TokenType.Id)
                     throw new ParserException("Se esperaba Id ");
+                string id = CurrentToken.Lexeme;
                 ConsumeToken();
-                IdentifierList();
+
+                List<string> identifier=IdentifierList();
+                identifier.Insert(0,id);
+                return identifier;
             }
             else
             {
-                //Epislon
+                return new List<string>(); //Epislon
             }
         }
 
-        private void VariableType()
+        private Type VariableType()
         {
             if (CurrentToken.Type == TokenType.Int || CurrentToken.Type == TokenType.Float ||
                 CurrentToken.Type == TokenType.String || CurrentToken.Type == TokenType.Bool)
             {
-                PrimitiveType();
+                return PrimitiveType();
             }else if (CurrentToken.Type == TokenType.Array)
             {
                 ConsumeToken();
                 if (CurrentToken.Type != TokenType.LeftBracket)
                     throw new ParserException("Se esperaba [ ");
                 ConsumeToken();
-                IntList();
+                List<int> Dimensions=IntList();
                 if (CurrentToken.Type != TokenType.RightBracket)
                     throw new ParserException("Se esperaba ] ");
                 ConsumeToken();
                 if (CurrentToken.Type != TokenType.Of)
                     throw new ParserException("Se esperaba Of ");
                 ConsumeToken();
-                VariableType();
+                Type type=VariableType();
+                return new ArrayType(type,Dimensions);
             }
             else
             {
@@ -244,12 +265,15 @@ namespace MiniCompiler
             }
         }
 
-        private void IntList()
+        private List<int> IntList()
         {
             if (CurrentToken.Type == TokenType.Int_Literal)
             {
+                int Int = int.Parse(CurrentToken.Lexeme);
                 ConsumeToken();
-                IntListP();
+                List<int> int_list=IntListP();
+                int_list.Insert(0,Int);
+                return int_list;
             }
             else
             {
@@ -257,27 +281,34 @@ namespace MiniCompiler
             }
         }
 
-        private void IntListP()
+        private List<int> IntListP()
         {
             if (CurrentToken.Type == TokenType.Comma)
             {
                 ConsumeToken();
-                IntListP();
-
+                if(CurrentToken.Type!=TokenType.Int_Literal)
+                    throw new ParserException("Se esperaba un entero");
+                int Int = int.Parse(CurrentToken.Lexeme);
+                ConsumeToken();
+                List <int> int_list=IntListP();
+                int_list.Insert(0,Int);
+                return int_list;
             }
             else
             {
-                //
+                return new List<int>();//ep
             }
         }
 
-        private void PrimitiveType()
+        private Type PrimitiveType()
         {
             if (CurrentToken.Type == TokenType.Bool  ||
                 CurrentToken.Type == TokenType.Float || CurrentToken.Type == TokenType.Int ||
                 CurrentToken.Type == TokenType.String)
             {
+                Type primitivetype=_primitivetypes[CurrentToken.Type];
                 ConsumeToken();
+                return primitivetype;
             }
             else
             {
