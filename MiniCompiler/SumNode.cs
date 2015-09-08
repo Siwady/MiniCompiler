@@ -1,4 +1,6 @@
-﻿namespace MiniCompiler
+﻿using MiniCompiler.Semantic.Types;
+
+namespace MiniCompiler
 {
     internal class SumNode:BinaryOperationNode
     {
@@ -8,7 +10,11 @@
 
         }
 
-       
-        
+
+        public override Type ValidateSemantic()
+        {
+            var leftType=LeftNode.ValidateSemantic();
+            var rightType = RightNode.ValidateSemantic();
+        }
     }
 }

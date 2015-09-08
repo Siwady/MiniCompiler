@@ -1,4 +1,5 @@
 using System.Globalization;
+using MiniCompiler.Semantic.Types;
 
 namespace MiniCompiler
 {
@@ -15,6 +16,11 @@ namespace MiniCompiler
         public override string ToXML()
         {
             return "<LiteralFloat>"+_value.ToString(CultureInfo.InvariantCulture) + "</LiteralFloat>";
+        }
+
+        public override Type ValidateSemantic()
+        {
+            return new FloatType();
         }
     }
 }

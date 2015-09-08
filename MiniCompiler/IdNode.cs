@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using MiniCompiler.Semantic;
+using Type = MiniCompiler.Semantic.Types.Type;
 
 namespace MiniCompiler
 {
@@ -15,6 +17,11 @@ namespace MiniCompiler
         public override string ToXML()
         {
             return String.Format("<Id>{0}</Id>",Name);
+        }
+
+        public override Type ValidateSemantic()
+        {
+            return SymbolTable.Instance.GetVariableType(Name);
         }
     }
 

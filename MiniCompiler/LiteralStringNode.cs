@@ -1,3 +1,5 @@
+using MiniCompiler.Semantic.Types;
+
 namespace MiniCompiler
 {
     public class LiteralStringNode : ExpressionNode
@@ -11,6 +13,11 @@ namespace MiniCompiler
         public override string ToXML()
         {
             return "<LiteralString>" +_value +"</LiteralString>";
+        }
+
+        public override Type ValidateSemantic()
+        {
+            return new StringType();
         }
     }
 }
