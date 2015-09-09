@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using MiniCompiler.Semantic;
+using MiniCompiler.Semantic.Types;
 
 namespace MiniCompiler
 {
@@ -6,16 +8,27 @@ namespace MiniCompiler
     {
         public WhileNodoStatement(ExpressionNode expr, List<StatementNode> list)
         {
-            ExpressionN = expr;
-            ExpressionListN = list;
+            Condition = expr;
+            Code = list;
         }
 
-        public List<StatementNode> ExpressionListN { get; set; }
+        public List<StatementNode> Code { get; set; }
 
-        public ExpressionNode ExpressionN { get; set; }
+        public ExpressionNode Condition { get; set; }
         public override string ToXML()
         {
             throw new System.NotImplementedException();
+        }
+
+        public override void ValidateSemantic()
+        {
+            if(!(Condition.ValidateSemantic() is BooleanType))
+                throw new SemanticException("Se esperaba expresion booleana en la sentencia while");
+
+            foreach (var statement in Code)
+            {
+                statement.ValidateSemantic();
+            }
         }
     }
 }

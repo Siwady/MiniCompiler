@@ -7,14 +7,14 @@ namespace MiniCompiler
         
         public SumNode(ExpressionNode leftNode, ExpressionNode rightNode) : base(leftNode,rightNode)
         {
+            Rules.Add("IntTypexIntType",new IntType());
+            Rules.Add("StringTypexStringType", new StringType());
+            Rules.Add("StringTypexIntType", new StringType());
+            Rules.Add("BooleanTypexBooleanType", new BooleanType());
+            Rules.Add("FloatTypexFloatType", new FloatType());
+            Rules.Add("IntTypexFloatType", new FloatType());
+            Rules.Add("FloatTypexIntType", new FloatType());
 
-        }
-
-
-        public override Type ValidateSemantic()
-        {
-            var leftType=LeftNode.ValidateSemantic();
-            var rightType = RightNode.ValidateSemantic();
         }
     }
 }

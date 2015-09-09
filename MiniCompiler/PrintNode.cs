@@ -1,4 +1,6 @@
 ﻿using System;
+using MiniCompiler.Semantic;
+using MiniCompiler.Semantic.Types;
 
 namespace MiniCompiler
 {
@@ -15,6 +17,12 @@ namespace MiniCompiler
         public override string ToXML()
         {
             return String.Format("<Print>{0}</Print>",Value.ToXML());
+        }
+
+        public override void ValidateSemantic()
+        {
+            if(Value.ValidateSemantic() is ArrayType)
+                throw new SemanticException("Tipo incompatible");
         }
     }
 }

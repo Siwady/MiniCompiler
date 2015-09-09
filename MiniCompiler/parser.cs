@@ -547,5 +547,10 @@ namespace MiniCompiler
         {
             throw new System.NotImplementedException();
         }
+
+        public override Type ValidateSemantic()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

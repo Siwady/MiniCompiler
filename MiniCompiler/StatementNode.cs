@@ -6,5 +6,6 @@ namespace MiniCompiler
     {
        
         public abstract string ToXML();
+        public abstract void ValidateSemantic();
     }
 }

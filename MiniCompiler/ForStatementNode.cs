@@ -1,28 +1,51 @@
 ﻿using System.Collections.Generic;
+using MiniCompiler.Semantic;
+using MiniCompiler.Semantic.Types;
 
 namespace MiniCompiler
 {
     public class ForStatementNode : StatementNode
     {
-        public ForStatementNode(ExpressionNode variable, ExpressionNode expr, ExpressionNode expr2, List<StatementNode> list)
+        public ForStatementNode(ExpressionNode variable, ExpressionNode initialValue, ExpressionNode finalValue, List<StatementNode> list)
         {
             Variable = variable;
-            Expr = expr;
-            Expr2 = expr2;
-            ListState = list;
+            InitialValue = initialValue;
+            FinalValue = finalValue;
+            Code = list;
         }
 
-        public List<StatementNode> ListState { get; set; }
+        public List<StatementNode> Code { get; set; }
 
-        public ExpressionNode Expr2 { get; set; }
+        public ExpressionNode FinalValue { get; set; }
 
-        public ExpressionNode Expr { get; set; }
+        public ExpressionNode InitialValue { get; set; }
 
         public ExpressionNode Variable { get; set; }
 
         public override string ToXML()
         {
             throw new System.NotImplementedException();
+        }
+
+        public override void ValidateSemantic()
+        {
+            if(!(Variable.ValidateSemantic() is IntType))
+            {
+                throw new SemanticException("Se esperaba  variable entero");
+            }
+            if (!(InitialValue.ValidateSemantic() is IntType))
+            {
+                throw new SemanticException("Se esperaba  Expresion inicial entero");
+            }
+            if (!(FinalValue.ValidateSemantic() is IntType))
+            {
+                throw new SemanticException("Se esperaba  Expresion final entero");
+            }
+
+            foreach (var statement in Code)
+            {
+                statement.ValidateSemantic();
+            }
         }
     }
 }

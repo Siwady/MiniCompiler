@@ -250,6 +250,7 @@ namespace MiniCompiler
                         else if(symbol=='\"')
                         {
                             lexeme += symbol;
+                            symbol = GetNextSymbol();
                             return new Token() { Type = TokenType.String_Literal, Lexeme = lexeme, Column = col, Row = _row };
                         }
                         break;

@@ -17,14 +17,17 @@ string a2;
 array[10,10] of int arreglo;
 array[10] of array[10] of int arreglo2;
 bool e;
-if true then 
+string j;
+if false then
+    j=""10""; 
 end
 
 while true do
     read a;
 end
 
-for a=3 to 5
+for x=3 to 5
+    
 end");
             /*Token currentToken = lex.GetToken();
             while (currentToken.Type != TokenType.EOF)
@@ -36,13 +39,14 @@ end");
             Parser parser = new Parser(lex);
             string XML = "";
             var par =parser.Parse();
+            
             var table = SymbolTable.Instance;
             Console.WriteLine("Works!");
-            /*foreach (var statementNode in par)
+            foreach (var statementNode in par)
             {
-                statementNode.Interpretar();
-                XML += statementNode.ToXML()+"\n";
-            }*/
+                statementNode.ValidateSemantic();
+                
+            }
             Console.WriteLine(XML);
             Console.ReadKey();
         }

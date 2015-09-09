@@ -1,3 +1,5 @@
+using MiniCompiler.Semantic.Types;
+
 namespace MiniCompiler
 {
     public class LiteralFalseNode : ExpressionNode
@@ -5,6 +7,11 @@ namespace MiniCompiler
         public override string ToXML()
         {
             return "<False></False>";
+        }
+
+        public override Type ValidateSemantic()
+        {
+            return new BooleanType();
         }
     }
 }
