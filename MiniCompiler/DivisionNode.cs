@@ -11,9 +11,5 @@ namespace MiniCompiler
             Rules.Add("IntTypexFloatType", new FloatType());
             Rules.Add("FloatTypexIntType", new FloatType());
         }
-
-     
-
-       
     }
 }

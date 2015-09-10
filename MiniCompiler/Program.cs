@@ -15,7 +15,6 @@ namespace MiniCompiler
 float d;
 string a2;
 array[10,10] of int arreglo;
-array[10] of array[10] of int arreglo2;
 bool e;
 string j;
 if false then
@@ -24,9 +23,10 @@ end
 
 while true do
     read a;
+    a=arreglo[8,1];
 end
 
-for x=3 to 5
+for a=3 to 5
     
 end");
             /*Token currentToken = lex.GetToken();

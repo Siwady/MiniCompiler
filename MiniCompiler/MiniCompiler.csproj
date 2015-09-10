@@ -73,6 +73,7 @@
     <Compile Include="SubstractNode.cs" />
     <Compile Include="SumNode.cs" />
     <Compile Include="Token.cs" />
+    <Compile Include="VaribleArrayNode.cs" />
     <Compile Include="WhileNodoStatement.cs" />
   </ItemGroup>
   <ItemGroup>

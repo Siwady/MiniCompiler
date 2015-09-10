@@ -515,6 +515,7 @@ namespace MiniCompiler
                 ConsumeToken();
                 var exp =Expr();
                 List<ExpressionNode> exprL= ExprListP();
+                exprL.Insert(0,exp);
                 return exprL;
             }
             else
@@ -529,28 +530,5 @@ namespace MiniCompiler
         }
 
         
-    }
-
-    public class VaribleArrayNode : ExpressionNode
-    {
-        public VaribleArrayNode(ExpressionNode expressionNode, List<ExpressionNode> expL)
-        {
-            ExpressionN = expressionNode;
-            ExprL = expL;
-        }
-
-        public List<ExpressionNode> ExprL { get; set; }
-
-        public ExpressionNode ExpressionN { get; set; }
-
-        public override string ToXML()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override Type ValidateSemantic()
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }
