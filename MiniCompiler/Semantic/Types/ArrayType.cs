@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MiniCompiler.Interpretar.Values;
 
 namespace MiniCompiler.Semantic.Types
 {
@@ -11,6 +12,11 @@ namespace MiniCompiler.Semantic.Types
         {
             OfType = ofType;
             Dimensions = dim;
+        }
+
+        public override InterpreteValue GetDefaultValue()
+        {
+            return new ArrayValue();
         }
     }
 }

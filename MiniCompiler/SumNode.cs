@@ -1,4 +1,5 @@
-﻿using MiniCompiler.Semantic.Types;
+﻿using MiniCompiler.Interpretar.Values;
+using MiniCompiler.Semantic.Types;
 
 namespace MiniCompiler
 {
@@ -15,6 +16,25 @@ namespace MiniCompiler
             Rules.Add("IntTypexFloatType", new FloatType());
             Rules.Add("FloatTypexIntType", new FloatType());
 
+        }
+
+        public override InterpreteValue Evaluate()
+        {
+            InterpreteValue leftType = LeftNode.Evaluate();
+            InterpreteValue righType = RightNode.Evaluate();
+            if (leftType is IntValue && righType is IntValue)
+            {
+                return new IntValue(((IntValue)leftType).Value + ((IntValue)righType).Value);
+            }
+            else if (leftType is FloatValue && righType is FloatValue)
+            {
+                return new FloatValue(((FloatValue)leftType).Value + ((FloatValue)righType).Value);
+            }
+            else if (leftType is StringValue && righType is StringValue)
+            {
+                return new StringValue(((StringValue)leftType).Value + ((StringValue)righType).Value);
+            }
+            return null;
         }
     }
 }

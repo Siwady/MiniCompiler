@@ -1,3 +1,4 @@
+using MiniCompiler.Interpretar.Values;
 using MiniCompiler.Semantic.Types;
 
 namespace MiniCompiler
@@ -10,6 +11,11 @@ namespace MiniCompiler
             Rules.Add("FloatTypexFloatType", new FloatType());
             Rules.Add("IntTypexFloatType", new FloatType());
             Rules.Add("FloatTypexIntType", new FloatType());
+        }
+
+        public override InterpreteValue Evaluate()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

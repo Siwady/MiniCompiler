@@ -43,5 +43,10 @@ namespace MiniCompiler
                 }
             }
         }
+
+        public override void Interpret()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

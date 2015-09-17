@@ -25,5 +25,10 @@ namespace MiniCompiler
             if (Variable.ValidateSemantic() is ArrayType)
                 throw new SemanticException("Tipo incompatible");
         }
+
+        public override void Interpret()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

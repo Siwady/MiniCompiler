@@ -30,5 +30,10 @@ namespace MiniCompiler
                 statement.ValidateSemantic();
             }
         }
+
+        public override void Interpret()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

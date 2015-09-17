@@ -48,6 +48,12 @@
     <Compile Include="ForStatementNode.cs" />
     <Compile Include="IdNode.cs" />
     <Compile Include="IfNodeStatement.cs" />
+    <Compile Include="Interpretar\Values\ArrayValue.cs" />
+    <Compile Include="Interpretar\Values\BooleanValue.cs" />
+    <Compile Include="Interpretar\Values\FloatValue.cs" />
+    <Compile Include="Interpretar\Values\InterpreteValue.cs" />
+    <Compile Include="Interpretar\Values\IntValue.cs" />
+    <Compile Include="Interpretar\Values\StringValue.cs" />
     <Compile Include="Lexer.cs" />
     <Compile Include="LiteralFalseNode.cs" />
     <Compile Include="LiteralFloatNode.cs" />

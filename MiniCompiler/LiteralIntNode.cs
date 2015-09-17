@@ -1,4 +1,5 @@
-﻿using MiniCompiler.Semantic.Types;
+﻿using MiniCompiler.Interpretar.Values;
+using MiniCompiler.Semantic.Types;
 
 namespace MiniCompiler
 {
@@ -18,6 +19,11 @@ namespace MiniCompiler
         public override Type ValidateSemantic()
         {
             return new IntType();
+        }
+
+        public override InterpreteValue Evaluate()
+        {
+            return new IntValue(_value);
         }
     }
 }

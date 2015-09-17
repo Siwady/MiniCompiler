@@ -30,5 +30,11 @@ namespace MiniCompiler
                 throw new SemanticException("Tipos incompatibles entre si.");
             }
         }
+
+        public override void Interpret()
+        {
+            var idNode = (MiniCompiler.IdNode) Variable;
+            idNode.SetValue(Value.Evaluate());
+        }
     }
 }

@@ -24,5 +24,11 @@ namespace MiniCompiler
             if(Value.ValidateSemantic() is ArrayType)
                 throw new SemanticException("Tipo incompatible");
         }
+
+        public override void Interpret()
+        {
+            var value=Value.Evaluate();
+            Console.WriteLine(value.TU_CADENA());
+        }
     }
 }

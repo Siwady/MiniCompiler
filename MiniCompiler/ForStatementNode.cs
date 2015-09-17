@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Data;
+using MiniCompiler.Interpretar.Values;
 using MiniCompiler.Semantic;
 using MiniCompiler.Semantic.Types;
 
@@ -45,6 +47,21 @@ namespace MiniCompiler
             foreach (var statement in Code)
             {
                 statement.ValidateSemantic();
+            }
+        }
+
+        public override void Interpret()
+        {
+            var idNode = (IdNode) Variable;
+            idNode.SetValue(InitialValue.Evaluate());
+            var finalValue = (IntValue)FinalValue.Evaluate();
+            while (((IntValue)idNode.Evaluate()).Value<=finalValue.Value)
+            {
+                foreach (var statementNode in Code)
+                {
+                    statementNode.Interpret();
+                }
+                idNode.SetValue(new IntValue(((IntValue)idNode.Evaluate()).Value+1));
             }
         }
     }

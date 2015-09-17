@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MiniCompiler.Interpretar.Values;
 using MiniCompiler.Semantic;
 using Type = MiniCompiler.Semantic.Types.Type;
 
@@ -22,6 +23,16 @@ namespace MiniCompiler
         public override Type ValidateSemantic()
         {
             return SymbolTable.Instance.GetVariableType(Name);
+        }
+
+        public override InterpreteValue Evaluate()
+        {
+            return SymbolTable.Instance.GetVariableValue(Name);
+        }
+
+        public void SetValue(InterpreteValue value)
+        {
+            SymbolTable.Instance.SetVariableValue(Name,value);
         }
     }
 

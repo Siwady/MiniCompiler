@@ -1,3 +1,4 @@
+using MiniCompiler.Interpretar.Values;
 using MiniCompiler.Semantic.Types;
 
 namespace MiniCompiler
@@ -7,5 +8,6 @@ namespace MiniCompiler
        
         public abstract string ToXML();
         public abstract Type ValidateSemantic();
+        public abstract InterpreteValue Evaluate();
     }
 }

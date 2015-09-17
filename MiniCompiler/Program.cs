@@ -17,17 +17,9 @@ string a2;
 array[10,10] of int arreglo;
 bool e;
 string j;
-if false then
-    j=""10""; 
-end
-
-while true do
-    read a;
-    a=arreglo[8,1];
-end
 
 for a=3 to 5
-    
+    print a;
 end");
             /*Token currentToken = lex.GetToken();
             while (currentToken.Type != TokenType.EOF)
@@ -46,6 +38,11 @@ end");
             {
                 statementNode.ValidateSemantic();
                 
+            }
+            foreach (var statementNode in par)
+            {
+                statementNode.Interpret();
+
             }
             Console.WriteLine(XML);
             Console.ReadKey();

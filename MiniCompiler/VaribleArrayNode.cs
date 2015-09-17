@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using MiniCompiler.Interpretar.Values;
 using MiniCompiler.Semantic;
 using MiniCompiler.Semantic.Types;
 
@@ -43,6 +44,11 @@ namespace MiniCompiler
                 }
             }
             return ((ArrayType)VarType).OfType;
+        }
+
+        public override InterpreteValue Evaluate()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
